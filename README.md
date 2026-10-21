@@ -43,8 +43,14 @@ kg2bin read mychannels.bin
 
 # Modify an existing ROM: dump it to CSV, edit, write it back
 kg2bin read master-roms/master_saw999.bin --csv saw999.csv
-kg2bin write saw999.csv --radio saw999
+kg2bin write saw999.csv --radio saw999           # -> saw999.bin
+kg2bin write saw999.csv --radio saw999 --force   # rebuild after more edits
 ```
+
+`write` never replaces an existing `.bin` unless you add `--force` (or pick
+another name with `-o`). That protects original radio dumps, because the
+CSV export can't hold everything in a ROM: descriptions, corrupt records and
+slots above channel 99 aren't kept.
 
 `--radio` choices: `kg107` / `kg109` (VHF, 1500 kHz PLL reference) and
 `saw999` (UHF, 6000 kHz reference). `--xtl <kHz>` sets the reference
@@ -64,7 +70,8 @@ Bank  Ch   RX MHz     TX MHz     Step kHz
 
 Other options: `write --size 2048|4096|8192` (default 8192; a single-bank
 2 KB image like `VHF_Master.bin` needs 2048), `write --round` (snap off-grid
-frequencies to the nearest channel), `write -v` (list every channel),
+frequencies to the nearest channel), `write --force` (replace an
+existing output file), `write -v` (list every channel),
 `read --csv -` (CSV to stdout). `kg2bin <command> --help` for the full list.
 
 ### How it differs from the Node tools
@@ -79,7 +86,8 @@ except where the Node tool is wrong (see known limitations below):
   bank/channel, unparseable numbers, missing columns) stop with an error that
   names the CSV line, instead of being skipped. Placeholder rows with a blank
   or `0` RX frequency are still skipped quietly.
-- `--radio` is required for `write` (no silent default reference).
+- `--radio` is required for `write` (no silent default reference), and
+  `write` won't overwrite an existing file without `--force`.
 - `read` decodes TX with its own R value, flags corrupt records (e.g.
   `master_saw999.bin` bank 2 ch 76) and leaves them out of CSV exports.
 - Options always work — no leading `2` needed.

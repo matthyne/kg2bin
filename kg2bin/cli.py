@@ -41,6 +41,9 @@ def cmd_write(args):
     out = Path(args.output) if args.output else Path(src.stem + ".bin")
     if out.resolve() == src.resolve():
         raise RomError("output file would overwrite the CSV")
+    if out.exists() and not args.force:
+        raise RomError(f"{out} already exists - use --force to replace it, "
+                       f"or -o to choose another name")
     channels = read_csv(src)
     if not channels:
         raise RomError(f"{src}: no channels found")
@@ -158,6 +161,8 @@ def build_parser():
     w.add_argument("--round", action="store_true",
                    help="snap off-grid frequencies to the nearest channel "
                         "instead of stopping with an error")
+    w.add_argument("-f", "--force", action="store_true",
+                   help="replace the output file if it already exists")
     w.add_argument("-v", "--verbose", action="store_true",
                    help="list every channel written")
     w.set_defaults(func=cmd_write)

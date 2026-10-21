@@ -41,7 +41,8 @@ python3 -m unittest -v      # from repo root
 
 Exact maths; off-grid freq is an error unless `--round`; bad CSV rows are
 errors with line numbers (Node silently skips); `--radio`/`--xtl` required
-for `write`; TX decoded with its own R; corrupt records flagged and left out
+for `write`; `write` refuses to overwrite without `--force` (protects
+radio dumps, since CSV export is lossy); TX decoded with its own R; corrupt records flagged and left out
 of CSV exports. Keep these when changing code; README lists them for users.
 
 ## Running the Node tools (for comparison)

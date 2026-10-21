@@ -82,7 +82,7 @@ class RoundTrip(unittest.TestCase):
                     self.assertEqual(code, 0)
                     code, _, _ = run("write", str(csv_path), "--xtl", str(xtl),
                                      "--size", str(len(original)),
-                                     "-o", str(bin_path))
+                                     "-o", str(bin_path), "--force")
                     self.assertEqual(code, 0)
                     rebuilt = bytearray(bin_path.read_bytes())
                     expected = bytearray(original)
@@ -186,6 +186,20 @@ class Cli(unittest.TestCase):
             code, out, _ = run("read", str(Path(tmp) / "c.bin"))
             self.assertIn("477.1750", out)
             self.assertIn("RX only", out)
+
+    def test_write_does_not_clobber_without_force(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            csv_path, bin_path = Path(tmp) / "c.csv", Path(tmp) / "c.bin"
+            run("template", str(csv_path))
+            bin_path.write_bytes(b"original dump")
+            args = ["write", str(csv_path), "--radio", "saw999",
+                    "-o", str(bin_path)]
+            code, _, err = run(*args)
+            self.assertEqual(code, 1)
+            self.assertIn("--force", err)
+            self.assertEqual(bin_path.read_bytes(), b"original dump")
+            self.assertEqual(run(*args, "--force")[0], 0)
+            self.assertEqual(len(bin_path.read_bytes()), 8192)
 
 
 if __name__ == "__main__":
