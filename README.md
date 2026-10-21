@@ -3,21 +3,106 @@
 Tools to create and read the channel ROM (EPROM) contents for
 **Kyodo KG107 / KG109** (VHF) and **Sawtron 999** (UHF) radios.
 
-- `writerom.js` — turn a CSV channel list into an 8 KB `.bin` ready to burn
-- `readrom.js`  — decode a `.bin` (e.g. one read from a radio) back into a
-  list of RX/TX frequencies
+- Write a channel list (CSV) into a `.bin` ready to burn to the EPROM
+- Read a `.bin` (e.g. dumped from a radio) back into a channel list or CSV
+
+There are two implementations:
+
+- **`kg2bin`** — Python 3 command-line tool for Linux (recommended)
+- `writerom.js` / `readrom.js` — the original Node.js tools
 
 The binary format is documented in [docs/ROM-FORMAT.md](docs/ROM-FORMAT.md).
 
-> A Python rewrite for Linux is in progress — see the Python section below
-> once it lands.
+## Python tool (`kg2bin`)
+
+Needs Python 3.10+ and nothing else (standard library only).
+
+### Install
+
+```bash
+git clone git@github.com:matthyne/kg2bin.git
+cd kg2bin
+pipx install --editable .        # puts `kg2bin` on your PATH
+```
+
+Or run it straight from the checkout without installing:
+`python3 -m kg2bin ...`
+
+### Everyday use
+
+```bash
+# 1. Start a channel list (or copy one from data/)
+kg2bin template mychannels.csv
+
+# 2. Edit it, then build the ROM -- say which radio it's for
+kg2bin write mychannels.csv --radio saw999        # -> mychannels.bin
+kg2bin write data/vhfmarine.csv --radio kg107 -o roms/vhf-marine.bin
+
+# 3. Check what's in a ROM (the radio type is auto-detected)
+kg2bin read mychannels.bin
+
+# Modify an existing ROM: dump it to CSV, edit, write it back
+kg2bin read master-roms/master_saw999.bin --csv saw999.csv
+kg2bin write saw999.csv --radio saw999
+```
+
+`--radio` choices: `kg107` / `kg109` (VHF, 1500 kHz PLL reference) and
+`saw999` (UHF, 6000 kHz reference). `--xtl <kHz>` sets the reference
+directly instead. The reference isn't stored in the ROM, so `write` always
+needs one; `read` works it out from the ROM's divider values (it's
+unambiguous for all supported spacings), or you can pass `--radio`.
+
+Sample `kg2bin read` output:
+
+```
+roms/uhfcb-80ch.bin (8192 bytes), 6000 kHz reference (Sawtron 999), auto-detected
+
+Bank  Ch   RX MHz     TX MHz     Step kHz
+   0   1   476.4250   476.4250       12.5
+   0  81   476.4250   477.1750       12.5
+```
+
+Other options: `write --size 2048|4096|8192` (default 8192; a single-bank
+2 KB image like `VHF_Master.bin` needs 2048), `write --round` (snap off-grid
+frequencies to the nearest channel), `write -v` (list every channel),
+`read --csv -` (CSV to stdout). `kg2bin <command> --help` for the full list.
+
+### How it differs from the Node tools
+
+Output is byte-for-byte identical to `writerom.js` for every valid input
+except where the Node tool is wrong (see known limitations below):
+
+- Exact arithmetic — no channels land one step low through float error.
+- Off-grid frequencies are an **error** (naming the nearest valid channels)
+  instead of being silently truncated; `--round` opts in to snapping.
+- Bad rows (unsupported spacing, bank not 0–3, channel not 1–99, duplicate
+  bank/channel, unparseable numbers, missing columns) stop with an error that
+  names the CSV line, instead of being skipped. Placeholder rows with a blank
+  or `0` RX frequency are still skipped quietly.
+- `--radio` is required for `write` (no silent default reference).
+- `read` decodes TX with its own R value, flags corrupt records (e.g.
+  `master_saw999.bin` bank 2 ch 76) and leaves them out of CSV exports.
+- Options always work — no leading `2` needed.
+
+### Tests
+
+```bash
+python3 -m unittest -v
+```
+
+The tests check the Python tool against the original: rebuilding every
+committed ROM byte for byte, matching `readrom.js` output saved in
+`tests/fixtures/node/`, and a bin → CSV → bin round trip of every ROM.
 
 ## Repository contents
 
 | Path | What it is |
 |------|------------|
-| `writerom.js` | CSV → ROM encoder |
-| `readrom.js` | ROM → frequency list decoder |
+| `kg2bin/` | Python tool (`rom.py` = format encode/decode + CSV, `cli.py` = commands) |
+| `tests/` | Python tests; `tests/fixtures/node/` = saved `readrom.js` output |
+| `pyproject.toml` | Python packaging (`kg2bin` console script) |
+| `writerom.js` | Original Node CSV → ROM encoder |
+| `readrom.js` | Original Node ROM → frequency list decoder |
 | `data/uhfcb-80ch.csv` | Australian UHF CB: bank 0 = 80-channel 12.5 kHz plan, bank 1 = old 40-channel 25 kHz plan (Sawtron, xtl 6000) |
 | `data/vhfmarine.csv` | VHF marine channels, 5 kHz step (KG107, xtl 1500) |
 | `data/vhf2m.csv` | Currently identical to `vhfmarine.csv` |
@@ -28,7 +113,9 @@ The binary format is documented in [docs/ROM-FORMAT.md](docs/ROM-FORMAT.md).
 | `master-roms/VHF_Master.bin` | Master VHF dump — 2 KB, 7 channels around 168–171 MHz |
 | `package-lock.json` | Dependency lock (there is no `package.json`; `node_modules` isn't committed) |
 
-## Setup (Node.js)
+## Original Node.js tools
+
+### Setup
 
 ```bash
 npm install csv-parser@2.3.0 minimist@1.2.0
@@ -37,7 +124,7 @@ npm install csv-parser@2.3.0 minimist@1.2.0
 (Those are the versions in `package-lock.json`; this was verified to rebuild
 the committed ROMs byte for byte on Node 22.)
 
-## Usage
+### Usage
 
 > **Important quirk:** both scripts only read the `--` options if the **first
 > argument is a number greater than 1**. Without it, the options are silently
@@ -66,7 +153,7 @@ Sample `readrom.js` output:
 
 Format: `bank-channel | RX MHz | TX MHz | step | (slot number in hex)`.
 
-### CSV format
+## CSV format
 
 ```csv
 bank,channel,rx_freq,tx_freq,desc,spacing
@@ -74,13 +161,20 @@ bank,channel,rx_freq,tx_freq,desc,spacing
 0,81,476.4250,477.1750,Rep 1,12.5
 ```
 
-- Matched by header name, so column order doesn't matter; `desc` is ignored.
+Used by both tools (`kg2bin template` writes a starter file).
+
+- Matched by header name, so column order doesn't matter; `desc` is a free
+  note (not stored in the ROM, so `kg2bin read --csv` leaves it blank).
 - `bank` 0–3, `channel` 1–99, frequencies in MHz, `spacing` in kHz
   (5, 10, 12.5, 25 or 30).
-- Blank/`0` `rx_freq` or an invalid `spacing` → row skipped (printed as
-  `Skipped`). Blank/`0` `tx_freq` → receive-only channel.
+- Blank/`0` `rx_freq` → placeholder row, skipped. Blank/`0` `tx_freq` →
+  receive-only channel.
+- An invalid `spacing`: Node skips the row (printed as `Skipped`); `kg2bin`
+  stops with an error naming the line.
 
 ## Known limitations of the Node tools
+
+(All fixed in the Python tool.)
 
 Found while documenting. They don't affect the bundled CSVs (those rebuild the
 committed ROMs exactly).

@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kg2bin"
+version = "1.0.0"
+description = "Build and read channel ROMs for Kyodo KG107/109 and Sawtron 999 radios"
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+requires-python = ">=3.10"
+
+[project.scripts]
+kg2bin = "kg2bin.cli:main"
+
+[tool.setuptools]
+packages = ["kg2bin"]

@@ -1,0 +1,13 @@
+Read a Sawtron Binary File and display the programming to the console
+ARGS: 2
+Output File: master-roms/VHF_Master.bin
+Crystal Freq = 1.5 Mhz
+Reading master-roms/VHF_Master.bin...
+0-1 | RX: 168.8200 | TX: 168.8200 | Spacing 5 kHz (0x1)
+0-2 | RX: 168.8500 | TX: 168.8500 | Spacing 5 kHz (0x2)
+0-3 | RX: 168.7900 | TX: 168.7900 | Spacing 5 kHz (0x3)
+0-4 | RX: 171.4800 | TX: 171.4800 | Spacing 5 kHz (0x4)
+0-5 | RX: 169.9600 | TX: 169.9600 | Spacing 5 kHz (0x5)
+0-6 | RX: 168.5500 | TX: 168.5500 | Spacing 5 kHz (0x6)
+0-8 | RX: 168.8200 | TX: 168.8200 | Spacing 5 kHz (0x8)
+End of master-roms/VHF_Master.bin - Length 0x800 (2048) words
