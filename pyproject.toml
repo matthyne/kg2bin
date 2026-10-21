@@ -15,3 +15,5 @@ kg2bin = "kg2bin.cli:main"
 
 [tool.setuptools]
 packages = ["kg2bin"]
+# The source lives in kg2bin-v2/ (kg2bin is a symlink to it for `python3 -m kg2bin`)
+package-dir = { kg2bin = "kg2bin-v2" }

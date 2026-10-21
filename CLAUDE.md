@@ -7,7 +7,11 @@ Guidance for Claude Code working in this repo.
 Tools to encode/decode channel EPROMs for Kyodo KG107/109 (VHF, PLL ref
 `xtl`=1500 kHz) and Sawtron 999 (UHF, `xtl`=6000 kHz) radios.
 
-- `kg2bin/` — Python 3.10+ CLI, stdlib only. The primary tool.
+- `kg2bin-v2/` — Python 3.10+ CLI, stdlib only. The primary tool. The
+  package is still imported as `kg2bin`: `kg2bin` is a git-tracked symlink to
+  `kg2bin-v2/` (for `python3 -m kg2bin` from the checkout and the tests), and
+  pyproject maps it with `package-dir = { kg2bin = "kg2bin-v2" }` so installs
+  don't depend on the symlink. Edit files under `kg2bin-v2/`.
   - `rom.py` — format constants, exact (Fraction) encode/decode, radio
     auto-detect, CSV read/write. `RomError` for every user-facing failure.
   - `cli.py` — argparse subcommands `write`, `read`, `template`; console

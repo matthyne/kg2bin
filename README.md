@@ -8,7 +8,7 @@ Tools to create and read the channel ROM (EPROM) contents for
 
 There are two implementations:
 
-- **`kg2bin`** — Python 3 command-line tool for Linux (recommended)
+- [`kg2bin-v2/`](kg2bin-v2/) — **`kg2bin`**, the Python 3 command-line tool for Linux (recommended)
 - [`kg2bin-v1/`](kg2bin-v1/) — the original Node.js tools (`writerom.js` / `readrom.js`)
 
 The binary format is documented in [docs/ROM-FORMAT.md](docs/ROM-FORMAT.md).
@@ -108,7 +108,8 @@ skips otherwise.
 
 | Path | What it is |
 |------|------------|
-| `kg2bin/` | Python tool (`rom.py` = format encode/decode + CSV, `cli.py` = commands) |
+| `kg2bin-v2/` | Python tool (`rom.py` = format encode/decode + CSV, `cli.py` = commands) |
+| `kg2bin` | Symlink to `kg2bin-v2/`, so `python3 -m kg2bin` and `import kg2bin` work (Python names can't contain `-`) |
 | `tests/` | Python tests; `tests/fixtures/node/` = saved `readrom.js` output |
 | `pyproject.toml` | Python packaging (`kg2bin` console script) |
 | `kg2bin-v1/writerom.js` | Original Node CSV → ROM encoder |
