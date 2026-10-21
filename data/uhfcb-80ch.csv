@@ -1,0 +1,152 @@
+bank,channel,rx_freq,tx_freq,desc,spacing
+0,1,476.4250,476.4250,Repeater Channel,12.5
+0,2,476.4500,476.4500,Repeater Channel,12.5
+0,3,476.4750,476.4750,Repeater Channel,12.5
+0,4,476.5000,476.5000,Repeater Channel,12.5
+0,5,476.5250,476.5250,Emergency Repeater Output,12.5
+0,6,476.5500,476.5500,Repeater Channel,12.5
+0,7,476.5750,476.5750,Repeater Channel,12.5
+0,8,476.6000,476.6000,Repeater Channel,12.5
+0,9,476.6250,476.6250,General Chat Channel,12.5
+0,10,476.6500,476.6500,4WD Clubs or Convoys and National Parks.,12.5
+0,11,476.6750,476.6750,Call Channel,12.5
+0,12,476.7000,476.7000,General Chat Channel,12.5
+0,13,476.7250,476.7250,General Chat Channel,12.5
+0,14,476.7500,476.7500,General Chat Channel,12.5
+0,15,476.7750,476.7750,General Chat Channel,12.5
+0,16,476.8000,476.8000,General Chat Channel,12.5
+0,17,476.8250,476.8250,General Chat Channel,12.5
+0,18,476.8500,476.8500,Caravanners and Campers Convoy Channel,12.5
+0,19,476.8750,476.8750,General Chat Channel,12.5
+0,20,476.9000,476.9000,General Chat Channel,12.5
+0,21,476.9250,476.9250,General Chat Channel,12.5
+0,22,476.9500,476.9500,Telemetry and Telecommand Only (No Voice or Data),25.0
+0,23,476.9750,476.9750,Telemetry and Telecommand Only (No Voice or Data),25.0
+0,24,477.0000,477.0000,General Chat Channel,12.5
+0,25,477.0250,477.0250,General Chat Channel,12.5
+0,26,477.0500,477.0500,General Chat Channel,12.5
+0,27,477.0750,477.0750,General Chat Channel,12.5
+0,28,477.1000,477.1000,General Chat Channel,12.5
+0,29,477.1250,477.1250,Road Safety ChannelPacific Hwy/Mwy between Brisbane (QLD) and Sydney (NSW),12.5
+0,30,477.1500,477.1500,General Chat Channel,12.5
+0,31,477.1750,477.1750,Repeater Input,12.5
+0,32,477.2000,477.2000,Repeater Input,12.5
+0,33,477.2250,477.2250,Repeater Input,12.5
+0,34,477.2500,477.2500,Repeater Input,12.5
+0,35,477.2750,477.2750,Emergency Repeater Input,12.5
+0,36,477.3000,477.3000,Repeater Input,12.5
+0,37,477.3250,477.3250,Repeater Input,12.5
+0,38,477.3500,477.3500,Repeater Input,12.5
+0,39,477.3750,477.3750,General Chat Channel,12.5
+0,40,477.4000,477.4000,Road Safety Australia Wide,12.5
+0,41,476.4375,476.4375,Repeater Channel,12.5
+0,42,476.4625,476.4625,Repeater Channel,12.5
+0,43,476.4875,476.4875,Repeater Channel,12.5
+0,44,476.5125,476.5125,Repeater Channel,12.5
+0,45,476.5375,476.5375,Repeater Channel,12.5
+0,46,476.5625,476.5625,Repeater Channel,12.5
+0,47,476.5875,476.5875,Repeater Channel,12.5
+0,48,476.6125,476.6125,Repeater Channel,12.5
+0,49,476.6375,476.6375,General Chat Channel,12.5
+0,50,476.6625,476.6625,General Chat Channel,12.5
+0,51,476.6875,476.6875,General Chat Channel,12.5
+0,52,476.7125,476.7125,General Chat Channel,12.5
+0,53,476.7375,476.7375,General Chat Channel,12.5
+0,54,476.7625,476.7625,General Chat Channel,12.5
+0,55,476.7875,476.7875,General Chat Channel,12.5
+0,56,476.8125,476.8125,General Chat Channel,12.5
+0,57,476.8375,476.8375,General Chat Channel,12.5
+0,58,476.8625,476.8625,General Chat Channel,12.5
+0,59,476.8875,476.8875,General Chat Channel,12.5
+0,60,476.9125,476.9125,General Chat Channel,12.5
+0,61,476.9375,476.9375,Reserved for Future Expansion,12.5
+0,62,476.9625,476.9625,Reserved for Future Expansion,12.5
+0,63,476.9875,476.9875,Reserved for Future Expansion,12.5
+0,64,477.0125,477.0125,General Chat Channel,12.5
+0,65,477.0375,477.0375,General Chat Channel,12.5
+0,66,477.0625,477.0625,General Chat Channel,12.5
+0,67,477.0875,477.0875,General Chat Channel,12.5
+0,68,477.1125,477.1125,General Chat Channel,12.5
+0,69,477.1375,477.1375,General Chat Channel,12.5
+0,70,477.1625,477.1625,General Chat Channel,12.5
+0,71,477.1875,477.1875,Repeater Input,12.5
+0,72,477.2125,477.2125,Repeater Input,12.5
+0,73,477.2375,477.2375,Repeater Input,12.5
+0,74,477.2625,477.2625,Repeater Input,12.5
+0,75,477.2875,477.2875,Repeater Input,12.5
+0,76,477.3125,477.3125,Repeater Input,12.5
+0,77,477.3375,477.3375,Repeater Input,12.5
+0,78,477.3625,477.3625,Repeater Input,12.5
+0,79,477.3875,477.3875,General Chat Channel,12.5
+0,80,477.4125,477.4125,General Chat Channel,12.5
+0,81,476.4250,477.1750,Rep 1,12.5
+0,82,476.4500,477.2000,Rep 2,12.5
+0,83,476.4750,477.2250,Rep 3,12.5
+0,84,476.5000,477.2500,Rep 4,12.5
+0,85,476.5250,477.2750,Rep 5,12.5
+0,86,476.5500,477.3000,Rep 6,12.5
+0,87,476.5750,477.3250,Rep 7,12.5
+0,88,476.6000,477.3500,Rep 8,12.5
+0,89,0,0,,
+0,90,0,0,,
+0,91,476.4375,477.1875,Rep 41,12.5
+0,92,476.4625,477.2125,Rep 42,12.5
+0,93,476.4875,477.2375,Rep 43,12.5
+0,94,476.5125,477.2625,Rep 44,12.5
+0,95,476.5375,477.2875,Rep 45,12.5
+0,96,476.5625,477.3125,Rep 46,12.5
+0,97,476.5875,477.3375,Rep 47,12.5
+0,98,476.6125,477.3625,Rep 48,12.5
+0,99,0,0,,
+
+
+1,1,476.4250,476.4250,Repeater Channel,12.5
+1,2,476.4500,476.4500,Repeater Channel,25
+1,3,476.4750,476.4750,Repeater Channel,25
+1,4,476.5000,476.5000,Repeater Channel,25
+1,5,476.5250,476.5250,Emergency Repeater Output,25
+1,6,476.5500,476.5500,Repeater Channel,25
+1,7,476.5750,476.5750,Repeater Channel,25
+1,8,476.6000,476.6000,Repeater Channel,25
+1,9,476.6250,476.6250,General Chat Channel,25
+1,10,476.6500,476.6500,4WD Clubs or Convoys and National Parks.,25
+1,11,476.6750,476.6750,Call Channel,25
+1,12,476.7000,476.7000,General Chat Channel,25
+1,13,476.7250,476.7250,General Chat Channel,25
+1,14,476.7500,476.7500,General Chat Channel,25
+1,15,476.7750,476.7750,General Chat Channel,25
+1,16,476.8000,476.8000,General Chat Channel,25
+1,17,476.8250,476.8250,General Chat Channel,25
+1,18,476.8500,476.8500,Caravanners and Campers Convoy Channel,25
+1,19,476.8750,476.8750,General Chat Channel,25
+1,20,476.9000,476.9000,General Chat Channel,25
+1,21,476.9250,476.9250,General Chat Channel,25
+1,22,476.9500,476.9500,Telemetry and Telecommand Only (No Voice or Data),25.0
+1,23,476.9750,476.9750,Telemetry and Telecommand Only (No Voice or Data),25.0
+1,24,477.0000,477.0000,General Chat Channel,25
+1,25,477.0250,477.0250,General Chat Channel,25
+1,26,477.0500,477.0500,General Chat Channel,25
+1,27,477.0750,477.0750,General Chat Channel,25
+1,28,477.1000,477.1000,General Chat Channel,25
+1,29,477.1250,477.1250,Road Safety ChannelPacific Hwy/Mwy between Brisbane (QLD) and Sydney (NSW),25
+1,30,477.1500,477.1500,General Chat Channel,25
+1,31,477.1750,477.1750,Repeater Input,25
+1,32,477.2000,477.2000,Repeater Input,25
+1,33,477.2250,477.2250,Repeater Input,25
+1,34,477.2500,477.2500,Repeater Input,25
+1,35,477.2750,477.2750,Emergency Repeater Input,25
+1,36,477.3000,477.3000,Repeater Input,25
+1,37,477.3250,477.3250,Repeater Input,25
+1,38,477.3500,477.3500,Repeater Input,25
+1,39,477.3750,477.3750,General Chat Channel,25
+1,40,477.4000,477.4000,Road Safety Australia Wide,25
+
+1,81,476.4250,477.1750,Rep 1,25
+1,82,476.4500,477.2000,Rep 2,25
+1,83,476.4750,477.2250,Rep 3,25
+1,84,476.5000,477.2500,Rep 4,25
+1,85,476.5250,477.2750,Rep 5,25
+1,86,476.5500,477.3000,Rep 6,25
+1,87,476.5750,477.3250,Rep 7,25
+1,88,476.6000,477.3500,Rep 8,25
+
