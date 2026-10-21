@@ -108,10 +108,11 @@ skips otherwise.
 
 | Path | What it is |
 |------|------------|
-| `kg2bin-v2/` | Python tool (`rom.py` = format encode/decode + CSV, `cli.py` = commands) |
+| `kg2bin-v2/` | Python tool (`rom.py` = format encode/decode + CSV, `cli.py` = commands); its own short [README](kg2bin-v2/README.md) |
 | `kg2bin` | Symlink to `kg2bin-v2/`, so `python3 -m kg2bin` and `import kg2bin` work (Python names can't contain `-`) |
 | `tests/` | Python tests; `tests/fixtures/node/` = saved `readrom.js` output |
 | `pyproject.toml` | Python packaging (`kg2bin` console script) |
+| `kg2bin-v1/README.md` | Short install/usage guide for the Node tools |
 | `kg2bin-v1/writerom.js` | Original Node CSV → ROM encoder |
 | `kg2bin-v1/readrom.js` | Original Node ROM → frequency list decoder |
 | `kg2bin-v1/package-lock.json` | Node dependency lock (there is no `package.json`; `node_modules` isn't committed) |

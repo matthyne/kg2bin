@@ -12,6 +12,8 @@ Tools to encode/decode channel EPROMs for Kyodo KG107/109 (VHF, PLL ref
   `kg2bin-v2/` (for `python3 -m kg2bin` from the checkout and the tests), and
   pyproject maps it with `package-dir = { kg2bin = "kg2bin-v2" }` so installs
   don't depend on the symlink. Edit files under `kg2bin-v2/`.
+- `kg2bin-v1/README.md`, `kg2bin-v2/README.md` — short per-tool install/usage
+  guides; keep them in sync with the main README when options change.
   - `rom.py` — format constants, exact (Fraction) encode/decode, radio
     auto-detect, CSV read/write. `RomError` for every user-facing failure.
   - `cli.py` — argparse subcommands `write`, `read`, `template`; console
