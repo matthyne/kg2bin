@@ -83,9 +83,9 @@ TX: A=0x22=34  N=0x253=595  R=0x1E0=480
 
 ### Empty / partial records
 
-- A slot whose first byte is `0xFF` is an empty channel.
+- A slot whose 16 bytes are all `0xFF` is an empty channel.
 - A record with RX filled and TX bytes all `0xFF` is a **receive-only**
-  channel (`readrom.js` prints `--Empty--` for TX; it tests byte 9).
+  channel (`readrom.js` prints `--Empty--` for TX).
 
 ## CSV input format (`writerom.js`)
 
@@ -98,13 +98,16 @@ CSVs list `tx_freq` before `rx_freq`). Extra columns such as `desc` are ignored.
 | `channel` | `23` | 1–99 |
 | `rx_freq` | `476.4250` | MHz. Blank or `0` → whole row skipped |
 | `tx_freq` | `477.1750` | MHz. Blank or `0` → receive-only (TX = 0xFF) |
-| `spacing` | `12.5` | kHz, one of 5 / 10 / 12.5 / 25 / 30, else row skipped |
+| `spacing` | `12.5` | kHz, one of 5 / 10 / 12.5 / 25 / 30 |
+
+Frequencies must sit exactly on the channel grid: (freq − offset) must be a
+whole multiple of the spacing, where offset is 21.6 MHz for RX and 0 for TX.
 
 ## Known anomaly in `master-roms/master_saw999.bin`
 
 Bank 2, channel 76 (offset 0x14B0) decodes to nonsense on the RX half
-(`RX 807.2000 / TX 7684.8000 / 400 kHz` in `readrom.js`, which uses the RX
-R value for both halves):
+(the original `readrom.js` printed `RX 807.2000 / TX 7684.8000 / 400 kHz`;
+the fixed one and `kg2bin read` flag it as corrupt):
 
 ```
 0C 02 0E 01 00 0F 00 00 | 0C 00 0C 02 01 00 0F 00

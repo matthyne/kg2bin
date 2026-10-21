@@ -15,7 +15,9 @@ Tools to encode/decode channel EPROMs for Kyodo KG107/109 (VHF, PLL ref
 - `kg2bin-v1/` — original Node tools (`writerom.js`, `readrom.js`,
   `package-lock.json`), kept as the reference. They share the top-level
   `data/`, `roms/`, `master-roms/` with the Python tool; their built-in
-  default paths are `__dirname/../data|roms` (only change made to them).
+  default paths are `__dirname/../data|roms`. Bug-fixed in Oct 2026 (exact
+  integer-Hz maths, off-grid = error and no ROM written, args work without
+  the leading `2`, readrom flags corrupt records). Original code: `923339c`.
 
 **The ROM format spec is `docs/ROM-FORMAT.md` — read it before touching any
 encode/decode logic.** Short version: 8192 bytes, 4 banks × 128 slots × 16
@@ -37,28 +39,34 @@ python3 -m unittest -v      # from repo root
 - Round trip bin→csv→bin over every committed ROM.
 - `master-roms/master_saw999.bin` bank 2 ch 76 (offset 0x14B0) has a corrupt
   RX half — `CORRUPT` in the tests excludes it; `read` flags it.
-- A one-off sweep of ~63k on-grid frequencies showed Python == Node except
-  the 532 channels (512–520 MHz) that Node gets one step low via float error.
+- `tests/test_v1_node.py` runs the Node tools; skipped unless `node` and
+  the npm deps resolve from `kg2bin-v1/` (node_modules or NODE_PATH).
+- A one-off sweep of ~63k on-grid frequencies showed fixed Node == Python on
+  every channel (the original Node got 532 channels at 512–520 MHz one step
+  low via float error).
 
-## Intentional differences from the Node tools
+## Differences between the Python and Node tools
 
-Exact maths; off-grid freq is an error unless `--round`; bad CSV rows are
-errors with line numbers (Node silently skips); `--radio`/`--xtl` required
-for `write`; `write` refuses to overwrite without `--force` (protects
-radio dumps, since CSV export is lossy); TX decoded with its own R; corrupt records flagged and left out
-of CSV exports. Keep these when changing code; README lists them for users.
+Both: exact maths, off-grid freq is an error, TX decoded with its own R,
+corrupt records flagged, identical ROM bytes. Python only: `--round`; bad
+spacing / bank / channel / duplicate rows are errors (Node skips bad
+spacing, doesn't check the rest); `--radio`/`--xtl` required for `write`;
+`write` refuses to overwrite without `--force` (protects radio dumps, since
+CSV export is lossy); radio auto-detect; CSV export. Keep these when
+changing code; README lists them for users.
 
 ## Running the Node tools (for comparison)
 
 ```bash
 # from repo root; deps resolve from kg2bin-v1/node_modules (or NODE_PATH)
 (cd kg2bin-v1 && npm install csv-parser@2.3.0 minimist@1.2.0)  # no package.json
-node kg2bin-v1/writerom.js 2 --csv=data/uhfcb-80ch.csv --rom=/tmp/x.bin --xtl=6000
-node kg2bin-v1/readrom.js 2 --rom=roms/uhfcb-80ch.bin --xtl=6000
+node kg2bin-v1/writerom.js --csv=data/uhfcb-80ch.csv --rom=/tmp/x.bin --xtl=6000
+node kg2bin-v1/readrom.js --rom=roms/uhfcb-80ch.bin --xtl=6000
 ```
 
-The leading `2` is required — without a numeric first arg >1 all flags are
-ignored. `writerom.js` writes asynchronously; wait for "Saved" before reading.
+A leading `2` (old style) is accepted but no longer needed. `writerom.js`
+writes asynchronously; wait for "Saved" before reading. It exits 1 and
+writes nothing if any row has an ERROR.
 `node_modules/` is gitignored; or point NODE_PATH at a scratch install.
 
 ## Data files

@@ -76,21 +76,19 @@ existing output file), `write -v` (list every channel),
 
 ### How it differs from the Node tools
 
-Output is byte-for-byte identical to `writerom.js` for every valid input
-except where the Node tool is wrong (see known limitations below):
+Both tools use the same exact maths and produce byte-for-byte identical
+ROMs for every valid input (checked over ~63,000 frequencies). `kg2bin` is
+stricter and does more:
 
-- Exact arithmetic — no channels land one step low through float error.
-- Off-grid frequencies are an **error** (naming the nearest valid channels)
-  instead of being silently truncated; `--round` opts in to snapping.
-- Bad rows (unsupported spacing, bank not 0–3, channel not 1–99, duplicate
-  bank/channel, unparseable numbers, missing columns) stop with an error that
-  names the CSV line, instead of being skipped. Placeholder rows with a blank
-  or `0` RX frequency are still skipped quietly.
+- Bad rows — unsupported spacing, bank not 0–3, channel not 1–99, duplicate
+  bank/channel, missing columns — stop with an error that names the CSV line.
+  (`writerom.js` skips unsupported-spacing rows and doesn't check the rest.)
+  Placeholder rows with a blank or `0` RX frequency are skipped by both.
+- `--round` can snap off-grid frequencies to the nearest channel
+  (`writerom.js` always treats them as an error).
 - `--radio` is required for `write` (no silent default reference), and
   `write` won't overwrite an existing file without `--force`.
-- `read` decodes TX with its own R value, flags corrupt records (e.g.
-  `master_saw999.bin` bank 2 ch 76) and leaves them out of CSV exports.
-- Options always work — no leading `2` needed.
+- `read` auto-detects the radio and can export a ROM back to an editable CSV.
 
 ### Tests
 
@@ -101,6 +99,10 @@ python3 -m unittest -v
 The tests check the Python tool against the original: rebuilding every
 committed ROM byte for byte, matching `readrom.js` output saved in
 `tests/fixtures/node/`, and a bin → CSV → bin round trip of every ROM.
+
+`tests/test_v1_node.py` also tests the Node tools in `kg2bin-v1/`. It runs
+when `node` and the npm dependencies are installed (see the setup below), and
+skips otherwise.
 
 ## Repository contents
 
@@ -138,10 +140,9 @@ to rebuild the committed ROMs byte for byte on Node 22.)
 
 ### Usage
 
-> **Important quirk:** both scripts only read the `--` options if the **first
-> argument is a number greater than 1**. Without it, the options are silently
-> ignored and the hard-coded defaults are used (`data/data.csv`,
-> `roms/rom.bin`, xtl 1500). Put a `2` first:
+Options left out fall back to the built-in defaults (`data/data.csv`,
+`roms/rom.bin`, xtl 1500). The old style with a leading `2`
+(`node kg2bin-v1/writerom.js 2 --csv=…`) still works.
 
 Run from the repo root (`--csv`/`--rom` paths are relative to where you run
 the command; the built-in defaults always point at the repo's `data/` and
@@ -149,11 +150,11 @@ the command; the built-in defaults always point at the repo's `data/` and
 
 ```bash
 # Build a ROM
-node kg2bin-v1/writerom.js 2 --csv=data/uhfcb-80ch.csv --rom=roms/uhfcb-80ch.bin --xtl=6000
-node kg2bin-v1/writerom.js 2 --csv=data/vhfmarine.csv  --rom=roms/vhf-marine.bin  --xtl=1500
+node kg2bin-v1/writerom.js --csv=data/uhfcb-80ch.csv --rom=roms/uhfcb-80ch.bin --xtl=6000
+node kg2bin-v1/writerom.js --csv=data/vhfmarine.csv  --rom=roms/vhf-marine.bin  --xtl=1500
 
 # Read a ROM back
-node kg2bin-v1/readrom.js 2 --rom=roms/uhfcb-80ch.bin --xtl=6000
+node kg2bin-v1/readrom.js --rom=roms/uhfcb-80ch.bin --xtl=6000
 ```
 
 `--xtl` is the radio's PLL reference in kHz: **1500 for the KG107/109, 6000
@@ -168,6 +169,12 @@ Sample `readrom.js` output:
 ```
 
 Format: `bank-channel | RX MHz | TX MHz | step | (slot number in hex)`.
+A record that can't be valid is shown as
+`2-76 | CORRUPT: <reason> (offset 0x…)` and counted in a warning at the end.
+
+If `writerom.js` finds a problem in the CSV (off-grid frequency, unreadable
+number, frequency out of range) it lists every `ERROR` with its CSV line
+number, does **not** write the ROM, and exits with status 1.
 
 ## CSV format
 
@@ -185,30 +192,30 @@ Used by both tools (`kg2bin template` writes a starter file).
   (5, 10, 12.5, 25 or 30).
 - Blank/`0` `rx_freq` → placeholder row, skipped. Blank/`0` `tx_freq` →
   receive-only channel.
-- An invalid `spacing`: Node skips the row (printed as `Skipped`); `kg2bin`
-  stops with an error naming the line.
+- An invalid `spacing`: `writerom.js` skips the row (printed as `Skipped`);
+  `kg2bin` stops with an error naming the line.
 
-## Known limitations of the Node tools
+## Bugs fixed in the Node tools (October 2026)
 
-(All fixed in the Python tool.)
+Found while documenting and fixed in `kg2bin-v1/`. None of them affected the
+bundled CSVs: the fixed tools still rebuild the committed ROMs byte for byte.
+The original 2019 code is in git history (commit `923339c`).
 
-Found while documenting. They don't affect the bundled CSVs (those rebuild the
-committed ROMs exactly).
-
-1. **Arguments ignored** unless the first argument is a number > 1 (see above).
-   With no arguments, `writerom.js` crashes looking for `data/data.csv`.
-2. **Off-grid frequencies are silently truncated** to the channel grid below
-   — e.g. 476.430 MHz at 12.5 kHz becomes 476.425 MHz with no warning.
-3. **Floating-point error can put a channel one step low.** Frequencies are
-   multiplied as floats and then truncated, so e.g. `512.045 * 1000` =
-   `512044.99999…` → 512.040 MHz. In a sweep of ~63,000 on-grid frequencies
-   (136–174 and 400–520 MHz, every step size, both reference values) 532 were
-   encoded one step low, all between 512.04 and 519.93 MHz; none in the UHF
-   CB or VHF marine ranges.
-4. `readrom.js` decodes TX using the **RX** R value, prints the input file as
-   "Output File", shows slot 128 as `1-0`, and only treats a slot as empty if
-   byte 0 is `0xFF`.
-5. Values ≥ 0x1000 for N or R would be silently mangled (no range check).
+1. **Arguments were ignored** unless the first argument was a number > 1.
+   With no arguments `writerom.js` crashed with a stack trace; it now prints
+   a clear "CSV file not found" error.
+2. **Off-grid frequencies were silently truncated** to the channel grid below
+   (476.430 MHz at 12.5 kHz became 476.425 MHz). Now an error naming the
+   nearest valid channels.
+3. **Floating-point error could put a channel one step low** (`512.045 * 1000`
+   = `512044.99999…` → 512.040 MHz). In a sweep of ~63,000 on-grid
+   frequencies, 532 were wrong, all between 512.04 and 519.93 MHz. All maths
+   is now done in whole Hz, and the sweep matches the Python tool exactly.
+4. `readrom.js` decoded TX with the **RX** R value, labelled its input file
+   "Output File", showed slot 128 as `1-0`, and decoded corrupt records as
+   nonsense frequencies. Each half now uses its own R, the label is
+   "ROM File", slot 128 shows as `0-128`, and corrupt records are flagged.
+5. Values ≥ 0x1000 for N or R were silently mangled; now a range error.
 
 ## License
 
