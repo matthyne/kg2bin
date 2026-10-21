@@ -20,7 +20,7 @@ Needs Python 3.10+ and nothing else (standard library only).
 ### Install
 
 ```bash
-git clone git@github.com:matthyne/kg2bin.git
+git clone https://github.com/matthyne/kg2bin.git   # or git@github.com:matthyne/kg2bin.git
 cd kg2bin
 pipx install --editable .        # puts `kg2bin` on your PATH
 ```

@@ -4,13 +4,30 @@
 Sawtron 999 (UHF) radios. It is the recommended tool. The original Node.js
 version is in [`../kg2bin-v1/`](../kg2bin-v1/).
 
+## Get the code
+
+Clone the repo (public, so no GitHub login needed):
+
+```bash
+git clone https://github.com/matthyne/kg2bin.git
+cd kg2bin
+```
+
+To get later updates: `git pull` inside the `kg2bin` folder.
+
 ## Install
 
-Needs Python 3.10+ and no other packages. From the repo root:
+Needs Python 3.10+ and no other packages. From the repo root (the
+`kg2bin` folder you just cloned):
 
 ```bash
 pipx install --editable .     # puts the `kg2bin` command on your PATH
 ```
+
+If `pipx` isn't installed: `sudo apt install pipx && pipx ensurepath`, then
+open a new terminal. Because the install is editable, `git pull` updates the
+command too. Don't move or delete the cloned folder afterwards, or the
+command will stop working (`pipx uninstall kg2bin` removes it).
 
 Or run it without installing, from the repo root: `python3 -m kg2bin …`
 

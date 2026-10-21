@@ -8,18 +8,30 @@ The original tools, bug-fixed in October 2026:
 For most jobs the Python tool in [`../kg2bin-v2/`](../kg2bin-v2/) is easier.
 Both tools produce identical ROMs.
 
+## Get the code
+
+Clone the repo (public, so no GitHub login needed):
+
+```bash
+git clone https://github.com/matthyne/kg2bin.git
+cd kg2bin
+```
+
+To get later updates: `git pull` inside the `kg2bin` folder.
+
 ## Install
 
-Needs Node.js (tested on Node 22).
+Needs Node.js (tested on Node 22). From the `kg2bin` folder:
 
 ```bash
 cd kg2bin-v1
 npm install csv-parser@2.3.0 minimist@1.2.0
+cd ..
 ```
 
 ## Use
 
-Run from the repo root:
+Run from the repo root (the `kg2bin` folder you cloned, not `kg2bin-v1`):
 
 ```bash
 # Build a ROM
