@@ -1,7 +1,8 @@
 """Tests for kg2bin. Run from the repo root: python3 -m unittest -v
 
-The original Node tools are the oracle: roms/*.bin were produced by
-writerom.js, and tests/fixtures/node/readrom_*.txt are readrom.js output.
+The original Node tools (kg2bin-v1/) are the oracle: roms/*.bin were
+produced by writerom.js, and tests/fixtures/node/readrom_*.txt are
+readrom.js output.
 """
 
 import io

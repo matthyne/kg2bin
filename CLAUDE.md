@@ -12,7 +12,10 @@ Tools to encode/decode channel EPROMs for Kyodo KG107/109 (VHF, PLL ref
     auto-detect, CSV read/write. `RomError` for every user-facing failure.
   - `cli.py` — argparse subcommands `write`, `read`, `template`; console
     script `kg2bin` (pyproject.toml), also `python3 -m kg2bin`.
-- `writerom.js` / `readrom.js` — original Node tools, kept as the reference.
+- `kg2bin-v1/` — original Node tools (`writerom.js`, `readrom.js`,
+  `package-lock.json`), kept as the reference. They share the top-level
+  `data/`, `roms/`, `master-roms/` with the Python tool; their built-in
+  default paths are `__dirname/../data|roms` (only change made to them).
 
 **The ROM format spec is `docs/ROM-FORMAT.md` — read it before touching any
 encode/decode logic.** Short version: 8192 bytes, 4 banks × 128 slots × 16
@@ -48,14 +51,15 @@ of CSV exports. Keep these when changing code; README lists them for users.
 ## Running the Node tools (for comparison)
 
 ```bash
-npm install csv-parser@2.3.0 minimist@1.2.0   # no package.json in repo
-node writerom.js 2 --csv=data/uhfcb-80ch.csv --rom=/tmp/x.bin --xtl=6000
-node readrom.js 2 --rom=roms/uhfcb-80ch.bin --xtl=6000
+# from repo root; deps resolve from kg2bin-v1/node_modules (or NODE_PATH)
+(cd kg2bin-v1 && npm install csv-parser@2.3.0 minimist@1.2.0)  # no package.json
+node kg2bin-v1/writerom.js 2 --csv=data/uhfcb-80ch.csv --rom=/tmp/x.bin --xtl=6000
+node kg2bin-v1/readrom.js 2 --rom=roms/uhfcb-80ch.bin --xtl=6000
 ```
 
 The leading `2` is required — without a numeric first arg >1 all flags are
 ignored. `writerom.js` writes asynchronously; wait for "Saved" before reading.
-Do this in a scratch copy so `node_modules/` doesn't land in the repo.
+`node_modules/` is gitignored; or point NODE_PATH at a scratch install.
 
 ## Data files
 

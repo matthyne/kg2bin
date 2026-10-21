@@ -1,4 +1,5 @@
 const fs = require('fs');  // required for file I/O
+const path = require('path');
 const csv = require('csv-parser');
 var argv = require('minimist')(process.argv.slice(2));
 
@@ -23,8 +24,9 @@ var debug = 0;
 var full_ch = Buffer.alloc(16, 0xff);
 var rom = Buffer.alloc(8192, 0xff);
 
-var csvfile = "./data/data.csv";
-var romfile = "./roms/rom.bin"
+// Defaults are relative to the repo root (one level up from this script)
+var csvfile = path.join(__dirname, "..", "data", "data.csv");
+var romfile = path.join(__dirname, "..", "roms", "rom.bin");
 
 var cnt = 0;
 

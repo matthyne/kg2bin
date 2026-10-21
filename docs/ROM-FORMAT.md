@@ -1,9 +1,11 @@
 # Kyodo KG107/109 & Sawtron 999 channel ROM format
 
-This describes the binary format that `writerom.js` produces and `readrom.js`
-decodes. Everything here was derived from the source and verified against the
-ROM images in this repo (the original tools regenerate `roms/*.bin` byte for
-byte from `data/*.csv`).
+This describes the binary format that the original Node tools in
+[`kg2bin-v1/`](../kg2bin-v1/) produce (`writerom.js`) and decode
+(`readrom.js`), and that the Python `kg2bin` tool reads and writes.
+Everything here was derived from the source and verified against the ROM
+images in this repo (the original tools regenerate `roms/*.bin` byte for byte
+from `data/*.csv`).
 
 ## The radio side (what the numbers mean)
 

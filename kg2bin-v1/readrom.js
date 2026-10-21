@@ -1,4 +1,5 @@
 const fs = require('fs');  // required for file I/O
+const path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
 
 // Application to read romfile (binary) and convert this to FREQs
@@ -8,7 +9,8 @@ var prescale = 64;      // dont change
 var local_osc = 21600;  // dont change
 const TX = 0;
 const RX = 1;
-var binfile = "./roms/rom.bin";
+// Default is relative to the repo root (one level up from this script)
+var binfile = path.join(__dirname, "..", "roms", "rom.bin");
 //var binfile = "./VHF_Master.bin";
 
 var debug = 0;

@@ -9,7 +9,7 @@ Tools to create and read the channel ROM (EPROM) contents for
 There are two implementations:
 
 - **`kg2bin`** — Python 3 command-line tool for Linux (recommended)
-- `writerom.js` / `readrom.js` — the original Node.js tools
+- [`kg2bin-v1/`](kg2bin-v1/) — the original Node.js tools (`writerom.js` / `readrom.js`)
 
 The binary format is documented in [docs/ROM-FORMAT.md](docs/ROM-FORMAT.md).
 
@@ -109,8 +109,9 @@ committed ROM byte for byte, matching `readrom.js` output saved in
 | `kg2bin/` | Python tool (`rom.py` = format encode/decode + CSV, `cli.py` = commands) |
 | `tests/` | Python tests; `tests/fixtures/node/` = saved `readrom.js` output |
 | `pyproject.toml` | Python packaging (`kg2bin` console script) |
-| `writerom.js` | Original Node CSV → ROM encoder |
-| `readrom.js` | Original Node ROM → frequency list decoder |
+| `kg2bin-v1/writerom.js` | Original Node CSV → ROM encoder |
+| `kg2bin-v1/readrom.js` | Original Node ROM → frequency list decoder |
+| `kg2bin-v1/package-lock.json` | Node dependency lock (there is no `package.json`; `node_modules` isn't committed) |
 | `data/uhfcb-80ch.csv` | Australian UHF CB: bank 0 = 80-channel 12.5 kHz plan, bank 1 = old 40-channel 25 kHz plan (Sawtron, xtl 6000) |
 | `data/vhfmarine.csv` | VHF marine channels, 5 kHz step (KG107, xtl 1500) |
 | `data/vhf2m.csv` | Currently identical to `vhfmarine.csv` |
@@ -119,33 +120,40 @@ committed ROM byte for byte, matching `readrom.js` output saved in
 | `roms/rom.bin` | Default output path — currently the same as `vhf-marine.bin` |
 | `master-roms/master_saw999.bin` | Factory/master Sawtron 999 dump — 4 banks of 25 kHz UHF channels (see the known anomaly in the format doc) |
 | `master-roms/VHF_Master.bin` | Master VHF dump — 2 KB, 7 channels around 168–171 MHz |
-| `package-lock.json` | Dependency lock (there is no `package.json`; `node_modules` isn't committed) |
 
-## Original Node.js tools
+## Original Node.js tools (`kg2bin-v1/`)
+
+The original programs live in [`kg2bin-v1/`](kg2bin-v1/). They share the
+top-level `data/`, `roms/` and `master-roms/` folders with the Python tool.
 
 ### Setup
 
 ```bash
+cd kg2bin-v1
 npm install csv-parser@2.3.0 minimist@1.2.0
 ```
 
-(Those are the versions in `package-lock.json`; this was verified to rebuild
-the committed ROMs byte for byte on Node 22.)
+(Those are the versions in `kg2bin-v1/package-lock.json`; this was verified
+to rebuild the committed ROMs byte for byte on Node 22.)
 
 ### Usage
 
 > **Important quirk:** both scripts only read the `--` options if the **first
 > argument is a number greater than 1**. Without it, the options are silently
-> ignored and the hard-coded defaults are used (`./data/data.csv`,
-> `./roms/rom.bin`, xtl 1500). Put a `2` first:
+> ignored and the hard-coded defaults are used (`data/data.csv`,
+> `roms/rom.bin`, xtl 1500). Put a `2` first:
+
+Run from the repo root (`--csv`/`--rom` paths are relative to where you run
+the command; the built-in defaults always point at the repo's `data/` and
+`roms/` folders, wherever you run from):
 
 ```bash
 # Build a ROM
-node writerom.js 2 --csv=data/uhfcb-80ch.csv --rom=roms/uhfcb-80ch.bin --xtl=6000
-node writerom.js 2 --csv=data/vhfmarine.csv  --rom=roms/vhf-marine.bin  --xtl=1500
+node kg2bin-v1/writerom.js 2 --csv=data/uhfcb-80ch.csv --rom=roms/uhfcb-80ch.bin --xtl=6000
+node kg2bin-v1/writerom.js 2 --csv=data/vhfmarine.csv  --rom=roms/vhf-marine.bin  --xtl=1500
 
 # Read a ROM back
-node readrom.js 2 --rom=roms/uhfcb-80ch.bin --xtl=6000
+node kg2bin-v1/readrom.js 2 --rom=roms/uhfcb-80ch.bin --xtl=6000
 ```
 
 `--xtl` is the radio's PLL reference in kHz: **1500 for the KG107/109, 6000
@@ -188,7 +196,7 @@ Found while documenting. They don't affect the bundled CSVs (those rebuild the
 committed ROMs exactly).
 
 1. **Arguments ignored** unless the first argument is a number > 1 (see above).
-   With no arguments, `writerom.js` crashes looking for `./data/data.csv`.
+   With no arguments, `writerom.js` crashes looking for `data/data.csv`.
 2. **Off-grid frequencies are silently truncated** to the channel grid below
    — e.g. 476.430 MHz at 12.5 kHz becomes 476.425 MHz with no warning.
 3. **Floating-point error can put a channel one step low.** Frequencies are
